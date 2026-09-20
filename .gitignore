@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environnements virtuels Python
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Notebook de test
+test.ipynb
+
+# Archives
+*.tgz
+
+# macOS
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Cache / tests
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
