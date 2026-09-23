@@ -14,6 +14,7 @@ ENV/
 
 # Notebook de test
 test.ipynb
+test_gradient_lr_knn_NB_voting.ipynb
 
 # Archives
 *.tgz
@@ -51,3 +52,8 @@ dist/
 .mypy_cache/
 .coverage
 htmlcov/
+
+# fichiers pickle
+model_knn.pkl
+model_logreg.pkl
+model_voting.pkl
