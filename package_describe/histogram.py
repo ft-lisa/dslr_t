@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import math
 
 pd.set_option('display.max_columns', None)
-#pd.set_option('display.max_lines', None)
 
 
 def ft_histogram(df_temp, path_output):
