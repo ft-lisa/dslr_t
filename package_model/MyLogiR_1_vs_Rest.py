@@ -2,8 +2,6 @@
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-
 
 class MyLogiR():
     """
@@ -21,12 +19,6 @@ class MyLogiR():
 
         self.X_with_intercept = None
         self.predictions = None
-        self.loss = None
-
-        # Permet de garder l'historique de la loss et des thetas
-        # surtout utile pour voir comment se comporte la descente de gradient
-        self.histo_loss = []
-        self.histo_thetas = []
 
         # On garde la moyenne et l'ecart type calcules sur le TRAIN
         # ATTENTION : il ne faudra surtout pas les recalculer sur le TEST
@@ -162,60 +154,6 @@ class MyLogiR():
         return y_hat
 
 
-    def logistic_predict_label(self, X, thet=None):
-        """
-        Transforme les probabilites en labels 0 ou 1.
-        """
-
-        # On commence par calculer les probabilites
-        y_hat = self.logistic_predict_proba_(X, thet)
-
-        # Si proba > 0.5 => classe 1
-        # sinon => classe 0
-        y_hat = (y_hat > 0.5).astype(int)
-
-        return y_hat
-
-
-    def log_loss_elem_(self, y, y_hat, eps=1e-15):
-        """
-        Calcule la log loss pour chaque ligne.
-        """
-
-        # Rappel :
-        # log(0) n'existe pas et tend vers -inf
-        #
-        # np.clip permet donc de forcer les probabilites a rester
-        # dans l'intervalle [eps, 1-eps]
-        # => ca protege les np.log juste en dessous
-        y_hat = np.clip(y_hat, eps, 1 - eps)
-
-        # Formule de la Binary Cross Entropy
-        res = -(y * np.log(y_hat)
-                + (1 - y) * np.log(1 - y_hat))
-
-        self.loss = res
-
-        return res
-
-
-    def log_loss_(self, y, y_hat, eps=1e-15):
-        """
-        Calcule la moyenne de la log loss sur toutes les observations.
-        """
-
-        # On calcule d'abord la loss pour chaque ligne
-        ndarray_temp = self.log_loss_elem_(y, y_hat, eps)
-
-        # Puis on fait la moyenne
-        # => une seule valeur de loss pour tout le dataset
-        res = np.sum(ndarray_temp) / ndarray_temp.shape[0]
-
-        self.loss = res
-
-        return res
-
-
     def vec_log_gradient(self, x, y):
         """
         Calcule le gradient de la log loss de maniere vectorisee,
@@ -339,10 +277,6 @@ class MyLogiR():
         # On va les reutiliser plus tard sur X_test.
         x = self.zscore(x)
 
-        # Reset de l'historique si jamais fit_ est appele plusieurs fois
-        self.histo_loss = []
-        self.histo_thetas = []
-
         # Descente de gradient
         for i in range(self.max_iter):
 
@@ -359,55 +293,7 @@ class MyLogiR():
             # theta(n+1) = theta(n) - alpha * gradient
             self.thetas = self.thetas - increment
 
-            # ATTENTION :
-            # x a DEJA ete standardise au debut de fit_.
-            #
-            # On met donc transform=False sinon
-            # logistic_predict_proba_ appliquerait une deuxieme fois
-            # la standardisation.
-            y_hat = self.logistic_predict_proba_(x, transform=False)
-
-            # On garde l'historique de la loss
-            # => utile pour verifier qu'elle diminue bien
-            self.histo_loss.append(self.log_loss_(y, y_hat))
-
-            # On garde egalement l'evolution des theta
-            self.histo_thetas.append(self.thetas.copy())
-
         return self.thetas
-
-
-    def plot_loss_throught_iter(self):
-        """
-        Permet de voir l'evolution de la loss pendant
-        la descente de gradient.
-        """
-
-        plt.figure(figsize=(10, 5))
-
-        plt.plot(
-            range(len(self.histo_loss)),
-            self.histo_loss
-        )
-
-        plt.title("Evolution de la loss pendant la descente de gradient")
-        plt.xlabel("Iterations")
-        plt.ylabel("Log loss")
-
-        plt.show()
-
-
-    def __str__(self):
-        """
-        Affiche toutes les methodes disponibles dans la classe.
-        """
-
-        methodes = [
-            func for func in dir(self)
-            if callable(getattr(self, func))
-        ]
-
-        return f"Fonctions disponibles : {', '.join(methodes)}"
 
 
 class MyLogiR_1_vs_Rest:
@@ -494,16 +380,6 @@ class MyLogiR_1_vs_Rest:
             # classe actuelle vs toutes les autres
             model.fit_(X, y_binary)
 
-            # print("Nombre de prédictions différentes :")
-            # print(np.sum(y_pred_val != y_val.to_numpy()))
-
-            # print("Prédictions :")
-            # print(np.unique(y_pred_val, return_counts=True))
-
-            # print("Vraies classes :")
-            # print(np.unique(y_val.to_numpy(), return_counts=True))
-
-
             # On garde le modele entraine dans le dictionnaire
             self.models[classe] = model
 
@@ -580,32 +456,3 @@ class MyLogiR_1_vs_Rest:
         result.to_csv("houses.csv", index=False)
 
         return result
-
-
-
-    def plot_loss_throught_iter(self):
-        """
-        Affiche l'evolution de la loss pour chacun
-        des modeles binaires du One-vs-Rest.
-        """
-
-        # Comme on a un modele MyLogiR par maison,
-        # => 4 descentes de gradient par Maison a afficher pour check la convergence
-        for classe in self.classes:
-
-            print(f"Loss : {classe} vs others")
-
-            self.models[classe].plot_loss_throught_iter()
-
-
-    def __str__(self):
-        """
-        Affiche toutes les methodes disponibles dans la classe.
-        """
-
-        methodes = [
-            func for func in dir(self)
-            if callable(getattr(self, func))
-        ]
-
-        return f"Fonctions disponibles : {', '.join(methodes)}"
