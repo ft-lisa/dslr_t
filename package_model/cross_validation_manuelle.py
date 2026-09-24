@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from .MyLogiR_1_vs_Rest import MyLogiR_1_vs_Rest
+from MyLogiR_1_vs_Rest import MyLogiR_1_vs_Rest
 
 def ft_cv_manuelle(df_train, col_shortl):
 
@@ -104,3 +104,21 @@ def ft_cv_manuelle(df_train, col_shortl):
     print(f"Ecart type : "f"{scores.std():.4f}")
 
     print(f"Accuracy moyenne : "f"{scores.mean() * 100:.2f}%")
+
+
+def main(path_file):
+
+    df_train = pd.read_csv(path_file, sep = ',', header=0).drop(columns=['Index'])
+    col_shortl = [col for col in df_train.columns if df_train[col].dtype in ['float64', 'int64']]
+
+    print(ft_cv_manuelle(df_train, col_shortl))
+
+    return
+
+
+if __name__ == "__main__":
+
+    path_train = '../datasets/dataset_train.csv'
+    path_test = '../datasets/dataset_test.csv'
+
+    main(path_train)

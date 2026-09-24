@@ -11,24 +11,26 @@ import joblib
 pd.set_option('display.max_columns', None)
 #pd.set_option('display.max_lines', None)
 
-from package_describe.pg_describe import ft_describe
-from package_describe.pg_histogram import ft_histogram
-from package_describe.pg_homogeneous import ft_homogeneous
-from package_describe.pg_scatter import ft_scatter_plot
-from package_describe.pg_pairplot import ft_pair_plot
-from package_describe.pg_correlation import ft_plot_heatmap
+from package_describe.describe import ft_describe
+from package_describe.histogram import ft_histogram
+from package_describe.homogeneous import ft_homogeneous
+from package_describe.scatter import ft_scatter_plot
+from package_describe.pairplot import ft_pair_plot
+from package_describe.correlation import ft_plot_heatmap
 
 from package_model.MyLogiR_1_vs_Rest import MyLogiR_1_vs_Rest
 from package_model.cross_validation_manuelle import ft_cv_manuelle
 from package_model.train import ft_train
 from package_model.prediction import ft_pred
+from package_model.prediction_knn import ft_pred_knn
+from package_model.train_knn import ft_train_knn
 
 def main(path_train, path_test):
 
     df_train = pd.read_csv(path_train, sep = ',', header=0).drop(columns=['Index'])
     col_shortl = [col for col in df_train.columns if df_train[col].dtype in ['float64', 'int64']]
 
-    print(f"\n{ft_describe(df_train)}\n")
+    print(f"\n{ft_describe(df_train, )}\n")
 
     output_path = "res/hist.png"
     print(f"\n{ft_histogram(df_train, output_path)}\n")
@@ -46,7 +48,7 @@ def main(path_train, path_test):
 
     ft_cv_manuelle(df_train, col_shortl)
 
-    print("\nentrainment du modele sur toute la data\n")
+    print("\nentrainement du modele sur toute la data\n")
     model_lr_manuel = ft_train(df_train, col_shortl)
 
     # Sauvegarde du modele
@@ -58,6 +60,20 @@ def main(path_train, path_test):
     df_test = pd.read_csv(path_test, sep = ',', header=0).drop(columns=['Index'])
     output_path = "res/houses.csv"
     ft_pred(df_test, col_shortl, loaded_model_logreg, output_path)
+
+
+    # Bonus KNN
+    print("\nentrainement du modele sur toute la data\n")
+    model_knn_manuel = ft_train_knn(df_train, col_shortl)
+
+    # Sauvegarde du modele
+    joblib.dump(model_knn_manuel, "res/model_knn.pkl")
+
+    # Reload du modele
+    loaded_model_knn = joblib.load("res/model_knn.pkl")
+
+    output_path = "res/houses_knn.csv"
+    ft_pred_knn(df_test, col_shortl, loaded_model_knn, output_path)
 
 
 if __name__ == "__main__":
