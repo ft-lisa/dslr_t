@@ -12,7 +12,7 @@ def ft_pred_knn(df_test, col_shortl, loaded_model_knn, path_output):
 
     houses_decode = {
     "0": "Ravenclaw",
-    "1": "Hufflepuff",
+    "1": "Slytherin",
     "2": "Gryffindor",
     "3": "Hufflepuff"
     }
@@ -29,7 +29,7 @@ def ft_pred_knn(df_test, col_shortl, loaded_model_knn, path_output):
 def main(path_file, path_model, path_output):
 
     df_train = pd.read_csv(path_file, sep = ',', header=0).drop(columns=['Index'])
-    col_shortl = [col for col in df_train.columns if df_train[col].dtype in ['float64', 'int64']]
+    col_shortl = [col for col in df_train.columns if df_train[col].dtype in ['float64', 'int64'] and col != "Hogwarts House"]
 
     # correl(Defense Against the Dark Arts vs Astronomy) == -1 => on ne garde que astronomy
     col_shortl = [col for col in col_shortl if col != "Defense Against the Dark Arts"]
@@ -48,4 +48,4 @@ if __name__ == "__main__":
     path_model = "../res/model_knn.pkl"
     path_output = "../res/houses_knn.csv"
 
-    main(path_train, path_model, path_output)
+    main(path_test, path_model, path_output)

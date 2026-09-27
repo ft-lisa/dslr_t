@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-# import numpy as np
+import numpy as np
 # import seaborn as sns
 # import matplotlib.pyplot as plt
 # import math
@@ -56,19 +56,18 @@ def main(path_train, path_test):
     ft_cv_manuelle(df_train, col_shortl)
 
     print("\nentrainement du modele logreg sur toute la data ->\n")
+
     output_path = ("res/model_logreg.pkl")
-    # model_lr_manuel = ft_train(df_train, col_shortl, output_path)
-    ft_train(df_train, col_shortl, output_path)
+    path_output_weights = "res/logreg_weights.csv"
 
-    # Sauvegarde du modele done dans ft_train
-    # joblib.dump(model_lr_manuel, output_path)
+    ft_train(df_train, col_shortl, output_path, path_output_weights)
 
-    # Reload du modele
-    loaded_model_logreg = joblib.load(output_path)
+    # Reload du modele : reccup des poids crees par logreg_train
+    df_weights = pd.read_csv(path_output_weights)
 
     df_test = pd.read_csv(path_test, sep = ',', header=0).drop(columns=['Index'])
     output_path = "res/houses.csv"
-    ft_pred(df_test, col_shortl, loaded_model_logreg, output_path)
+    ft_pred(df_test, df_weights, output_path)
 
     # Bonus KNN
     print("\nKNN: recherche de k_optim puis entrainement sur toute la data avec \n")

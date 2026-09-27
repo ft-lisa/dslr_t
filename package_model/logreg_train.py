@@ -12,7 +12,7 @@ except ModuleNotFoundError:
 
 import joblib
 
-def ft_train(df_train, col_shortl, path_output):
+def ft_train(df_train, col_shortl, path_output, path_output_weights):
 
     df_train_temp = df_train[col_shortl].copy()
 
@@ -44,10 +44,53 @@ def ft_train(df_train, col_shortl, path_output):
     joblib.dump(model_lr_manuel, path_output)
     print("\nmodel_lr_manuel mis dans le cache")
 
+        # Sauvegarde des poids
+    houses_decode = {
+        "0": "Ravenclaw",
+        "1": "Slytherin",
+        "2": "Gryffindor",
+        "3": "Hufflepuff"
+    }
+
+    weights = []
+
+    for classe in model_lr_manuel.classes:
+
+        model = model_lr_manuel.models[classe]
+
+        row = [classe, houses_decode[classe]]
+
+        # Poids du modele
+        row += model.thetas.flatten().tolist()
+
+        # Parametres necessaires pour transformer le test
+        row += model.moy.flatten().tolist()
+        row += model.std.flatten().tolist()
+        row += model.imputer_mean.flatten().tolist()
+
+        weights.append(row)
+
+    columns = (
+        ["Encoding", "Hogwarts House", "theta_0"]
+        + [f"theta_{col}" for col in col_shortl]
+        + [f"mean_{col}" for col in col_shortl]
+        + [f"std_{col}" for col in col_shortl]
+        + [f"imputer_{col}" for col in col_shortl]
+    )
+
+    df_weights = pd.DataFrame(
+        weights,
+        columns=columns
+    )
+
+    df_weights.to_csv(path_output_weights, index=False)
+
+    print("\nlogreg_weights.csv cree")
+
     return model_lr_manuel
 
 
-def main(path_file, path_output):
+def main(path_file, path_output, path_output_weights):
 
     df_train = pd.read_csv(path_file, sep = ',', header=0).drop(columns=['Index'])
     col_shortl = [col for col in df_train.columns if df_train[col].dtype in ['float64', 'int64']]
@@ -55,7 +98,7 @@ def main(path_file, path_output):
     # correl(Defense Against the Dark Arts vs Astronomy) == -1 => on ne garde que astronomy
     col_shortl = [col for col in col_shortl if col != "Defense Against the Dark Arts"]
 
-    print(ft_train(df_train, col_shortl, path_output))
+    print(ft_train(df_train, col_shortl, path_output, path_output_weights))
 
     return
 
@@ -69,5 +112,6 @@ if __name__ == "__main__":
     path_test = '../datasets/dataset_test.csv'
 
     path_output = "../res/model_logreg.pkl"
+    path_output_weights = "../res/logreg_weights.csv"
 
-    main(path_train, path_output)
+    main(path_train, path_output, path_output_weights)
