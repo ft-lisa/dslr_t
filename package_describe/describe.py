@@ -116,7 +116,7 @@ def ft_describe(df_temp):
 
     df_temp = df_temp.select_dtypes(include=['int64', 'float'])
 
-    stats_names = ["count", "mean", "std", "min", "25%", "50%", "75%", "max"]
+    stats_names = ["count", "missing%", "mean", "std", "min", "25%", "50%", "75%", "max"]
     result_dict = {stat: [] for stat in stats_names}
 
     for c in df_temp.columns:
@@ -127,6 +127,8 @@ def ft_describe(df_temp):
 
         # Stats
         count_val = ft_count(col_clean)
+        # missing_val = ft_count(col) - count_val
+        missing_val = round(1 - count_val / ft_count(col), 3)
         mean_val = mean(col_clean)
         std_val = std(col_clean)
         min_val = ft_min(col_clean)
@@ -136,6 +138,7 @@ def ft_describe(df_temp):
 
         # append
         result_dict["count"].append(count_val)
+        result_dict["missing%"].append(missing_val)   # Bonus
         result_dict["mean"].append(mean_val)
         result_dict["std"].append(std_val)
         result_dict["min"].append(min_val)
