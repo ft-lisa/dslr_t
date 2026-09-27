@@ -46,10 +46,16 @@ def main(path_train, path_test):
     output_path = "res/heatmap.png"
     print(f"\n{ft_plot_heatmap(df_train, output_path)}\n")
 
-    print(f"following: Cross validation logReg 1 vs All ->")
+    # correl(Defense Against the Dark Arts vs Astronomy) == -1 => on ne garde que astronomy
+    col_shortl = [col for col in col_shortl if col != "Defense Against the Dark Arts"]
+    print(f"New col short:\n{col_shortl}\n")
+    for col in col_shortl:
+        print(col)
+
+    print(f"\nfollowing: Cross validation logReg 1 vs All ->")
     ft_cv_manuelle(df_train, col_shortl)
 
-    print("\nentrainement du modele sur toute la data ->\n")
+    print("\nentrainement du modele logreg sur toute la data ->\n")
     output_path = ("res/model_logreg.pkl")
     # model_lr_manuel = ft_train(df_train, col_shortl, output_path)
     ft_train(df_train, col_shortl, output_path)
@@ -64,9 +70,8 @@ def main(path_train, path_test):
     output_path = "res/houses.csv"
     ft_pred(df_test, col_shortl, loaded_model_logreg, output_path)
 
-
     # Bonus KNN
-    print("\nentrainement du modele sur toute la data\n")
+    print("\nKNN: recherche de k_optim puis entrainement sur toute la data avec \n")
     path_output = "res/model_knn.pkl"
     ft_train_knn(df_train, col_shortl, path_output)
 

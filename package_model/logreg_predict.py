@@ -32,6 +32,9 @@ def main(path_file, path_model, path_output):
     df_train = pd.read_csv(path_file, sep = ',', header=0).drop(columns=['Index'])
     col_shortl = [col for col in df_train.columns if df_train[col].dtype in ['float64', 'int64']]
 
+    # correl(Defense Against the Dark Arts vs Astronomy) == -1 => on ne garde que astronomy
+    col_shortl = [col for col in col_shortl if col != "Defense Against the Dark Arts"]
+
     loaded_model_logreg = joblib.load(path_model)
     print(ft_pred(df_train, col_shortl, loaded_model_logreg, path_output))
 
