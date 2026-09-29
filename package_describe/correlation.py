@@ -64,12 +64,12 @@ def ft_plot_heatmap(df_train, path_output):
     plt.figure(figsize=(12, 10))
 
     sns.heatmap(
-    tableau.abs(),
-    cmap='Reds',
-    vmin=0,
-    vmax=1,
-    annot=True,
-    fmt=".2f"
+        tableau.abs(),
+        cmap='Reds',
+        vmin=0,
+        vmax=1,
+        annot=True,
+        fmt=".2f"
     )
 
     plt.savefig(path_output)

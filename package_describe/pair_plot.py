@@ -23,17 +23,6 @@ def ft_pair_plot(my_df, path_output):
                 plt.xticks([])
                 plt.yticks([])
 
-                sns.regplot(
-                    x=col_x,
-                    y=col_y,
-                    data=my_df,
-                    scatter=False,
-                    color="black",
-                    line_kws={"linewidth": 1})
-
-                plt.xticks([])
-                plt.yticks([])
-
             else:
                 plt.subplot(n, n, j*n + i + 1)
                 for house in houses:
