@@ -4,23 +4,16 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import math
+# import math
 
-def ft_ecart_type(valeurs):
-    n = len(valeurs)
-
-    moyenne = sum(valeurs) / n
-
-    somme = 0
-    for valeur in valeurs:
-        somme += (valeur - moyenne) ** 2
-
-    variance = somme / n
-
-    return math.sqrt(variance)
+try:
+    from package_describe.describe import mean, std
+except ModuleNotFoundError:
+    from describe import mean, std
 
 
 def ft_correlation(x, y):
+
     x = np.array(x)
     y = np.array(y)
 
@@ -30,13 +23,16 @@ def ft_correlation(x, y):
     y = y[masque]
     n = len(x)
 
-    x_mean = np.mean(x)
-    y_mean = np.mean(y)
+    x_mean = mean(x)
+    y_mean = mean(y)
 
-    numerateur = np.sum((x - x_mean) * (y - y_mean))
+    # numerateur = np.sum((x - x_mean) * (y - y_mean))
+    numerateur = 0
+    for i in range(n):
+        numerateur += (x[i] - x_mean) * (y[i] - y_mean)
 
-    ecart_type_x = ft_ecart_type(x)
-    ecart_type_y = ft_ecart_type(y)
+    ecart_type_x = std(x)
+    ecart_type_y = std(y)
 
     denominateur = n * ecart_type_x * ecart_type_y
 

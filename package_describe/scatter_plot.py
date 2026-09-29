@@ -4,6 +4,12 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+try:
+    from package_describe.correlation import ft_correlation
+except ModuleNotFoundError:
+    from correlation import ft_correlation
+
+
 def ft_scatter_plot(my_df, path_output):
 
     cols = my_df.select_dtypes(include=["int64", "float64"]).columns
@@ -12,7 +18,11 @@ def ft_scatter_plot(my_df, path_output):
 
     for i in range(len(cols)):
         for j in range(i+1, len(cols)):
-            r = corr_matrix.iloc[i, j]
+
+            x = my_df[cols[i]].values
+            y = my_df[cols[j]].values
+
+            r = ft_correlation(x, y)
 
             # identification des 2 features "identiques"
             if abs(r) > 0.999:

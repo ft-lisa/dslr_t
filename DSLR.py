@@ -13,7 +13,6 @@ pd.set_option('display.max_columns', None)
 
 from package_describe.describe import ft_describe
 from package_describe.histogram import ft_histogram
-from package_describe.homogeneous import ft_homogeneous
 from package_describe.scatter_plot import ft_scatter_plot
 from package_describe.pair_plot import ft_pair_plot
 from package_describe.correlation import ft_plot_heatmap
@@ -34,8 +33,6 @@ def main(path_train, path_test):
 
     output_path = "res/hist.png"
     print(f"\n{ft_histogram(df_train, output_path)}\n")
-
-    print(f"\n{ft_homogeneous(df_train, col_shortl)}\n")
 
     output_path = "res/scatter.png"
     print(f"\n{ft_scatter_plot(df_train, output_path)}\n")
