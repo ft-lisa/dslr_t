@@ -2,6 +2,8 @@
 
 import pandas as pd
 import numpy as np
+import sys
+from pathlib import Path
 
 
 def ft_pred(df_test, df_weights, path_output):
@@ -77,19 +79,60 @@ def ft_pred(df_test, df_weights, path_output):
 
 def main(path_test, path_weights, path_output):
 
-    df_test = pd.read_csv(path_test, sep=',', header=0).drop(columns=['Index'])
+    # Lecture du dataset test
+    try:
+        df_test = pd.read_csv(path_test, sep=",", header=0)
+    except FileNotFoundError:
+        print(f"Error: file '{path_test}' not found.")
+        return
+    except Exception as e:
+        print(f"Error: unable to read '{path_test}': {e}")
+        return
 
-    df_weights = pd.read_csv(path_weights)
+    # Vérification de l'Index
+    if "Index" not in df_test.columns:
+        print("Error: column 'Index' is missing from the test dataset.")
+        return
 
-    # col_shortl = [col.replace("theta_", "", 1) for col in df_weights.columns if col.startswith("theta_") and col != "theta_0"]
+    # Suppression de l'Index
+    df_test = df_test.drop(columns=["Index"])
 
+    # Lecture des poids
+    try:
+        df_weights = pd.read_csv(path_weights)
+    except FileNotFoundError:
+        print(f"Error: weights file '{path_weights}' not found.")
+        return
+    except Exception as e:
+        print(f"Error: unable to read '{path_weights}': {e}")
+        return
+
+    # Vérification des poids
+    theta_columns = [
+        col for col in df_weights.columns
+        if col.startswith("theta_")
+    ]
+
+    if not theta_columns:
+        print("Error: no 'theta_' columns found in the weights file.")
+        return
+
+    # Prédiction
     ft_pred(df_test, df_weights, path_output)
 
 
 if __name__ == "__main__":
 
-    path_test = '../datasets/dataset_test.csv'
-    path_weights = '../res/logreg_weights.csv'
-    path_output = '../res/houses.csv'
+    # Usage:
+    # python logreg_predict.py dataset_test.csv
+
+    if len(sys.argv) != 2:
+        print("Usage: python logreg_predict.py dataset_test.csv")
+        sys.exit(1)
+
+    path_test = Path(sys.argv[1])
+
+    path_weights = Path("res") / "logreg_weights.csv"
+    path_output = Path("res") / "houses.csv"
 
     main(path_test, path_weights, path_output)

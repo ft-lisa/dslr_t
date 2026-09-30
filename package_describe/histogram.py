@@ -4,6 +4,10 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import math
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 try:
     from package_describe.describe import ft_min, ft_max, mean
@@ -173,15 +177,9 @@ def ft_histogram(df_temp, path_output):
 
 def main(path_file):
 
-    df_train = pd.read_csv(path_file, sep=',', header=0).drop(columns=['Index'])
+    df_train = pd.read_csv(path_file, sep=",", header=0).drop(columns=["Index"])
 
-    path_output = "../res/hist.png"
-
-    # col_shortl = [col for col in df_train.columns
-    #     if df_train[col].dtype in ['float64', 'int64']
-    # ]
-
-    # ft_homogeneous(df_train, col_shortl)
+    path_output = BASE_DIR / "res" / "hist.png"
 
     print(ft_histogram(df_train, path_output))
 
@@ -190,7 +188,8 @@ def main(path_file):
 
 if __name__ == "__main__":
 
-    path_train = '../datasets/dataset_train.csv'
-    path_test = '../datasets/dataset_test.csv'
+    path_train = BASE_DIR / "datasets" / "dataset_train.csv"
+    path_test = BASE_DIR / "datasets" / "dataset_test.csv"
 
     main(path_train)
+

@@ -4,6 +4,9 @@ import pandas as pd
 # import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 def ft_pair_plot(my_df, path_output):
 
@@ -41,8 +44,9 @@ def ft_pair_plot(my_df, path_output):
 
 def main(path_file):
 
-    df_train = pd.read_csv(path_file, sep = ',', header=0).drop(columns=['Index'])
-    path_output = "../res/pairplot.png"
+    df_train = pd.read_csv(path_file, sep=",", header=0).drop(columns=["Index"])
+
+    path_output = BASE_DIR / "res" / "pairplot.png"
 
     print(ft_pair_plot(df_train, path_output))
 
@@ -51,7 +55,8 @@ def main(path_file):
 
 if __name__ == "__main__":
 
-    path_train = '../datasets/dataset_train.csv'
-    path_test = '../datasets/dataset_test.csv'
+    path_train = BASE_DIR / "datasets" / "dataset_train.csv"
+    path_test = BASE_DIR / "datasets" / "dataset_test.csv"
 
     main(path_train)
+

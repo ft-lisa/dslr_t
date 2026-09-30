@@ -3,6 +3,9 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 try:
     from package_describe.correlation import ft_correlation
@@ -43,11 +46,11 @@ def ft_scatter_plot(my_df, path_output):
 
     return "export scatter.png done"
 
-
 def main(path_file):
 
-    df_train = pd.read_csv(path_file, sep = ',', header=0).drop(columns=['Index'])
-    path_output = "../res/scatter.png"
+    df_train = pd.read_csv(path_file, sep=",", header=0).drop(columns=["Index"])
+
+    path_output = BASE_DIR / "res" / "scatter.png"
 
     print(ft_scatter_plot(df_train, path_output))
 
@@ -56,7 +59,8 @@ def main(path_file):
 
 if __name__ == "__main__":
 
-    path_train = '../datasets/dataset_train.csv'
-    path_test = '../datasets/dataset_test.csv'
+    path_train = BASE_DIR / "datasets" / "dataset_train.csv"
+    path_test = BASE_DIR / "datasets" / "dataset_test.csv"
 
     main(path_train)
+
