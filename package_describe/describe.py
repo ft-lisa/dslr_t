@@ -52,6 +52,8 @@ def ft_max(list_nombre):
 
 def mean(list_nombre):
     n = len(list_nombre)
+    if n == 0:
+        return None
     res = sum(x for x in list_nombre) / n
 
     return res
@@ -59,6 +61,8 @@ def mean(list_nombre):
 
 def var(list_nombre):
     n = len(list_nombre)
+    if n == 0:
+            return None
     moy = sum(x for x in list_nombre) / n
     res = sum((x - moy)**2 for x in list_nombre) / n
 
@@ -67,13 +71,19 @@ def var(list_nombre):
 
 def std(list_nombre):
     res = var(list_nombre)
+    if res == None:
+        return None
     res = res**0.5
 
     return res
 
 
 def median(list_nombre):
+
     n = len(list_nombre)
+
+    if n  == 0:
+        return None, None
     if n == 1:
         position = 0
         mediane = list_nombre[position]
@@ -94,8 +104,9 @@ def median(list_nombre):
 
 def quartile(list_nombre):
     n = len(list_nombre)
+
     if n <= 3:
-        res = "not enough elements in list"
+        res = [None, None]
 
     else:
         list_nombre = tri_bulle(list_nombre)
@@ -104,11 +115,13 @@ def quartile(list_nombre):
         right = list_nombre[position:]
         position1 = median(left)[1]
         position2 = median(right)[1]
+
         res = []
         res.append(float(left[position1]))
         res.append(float(right[position2]))
 
     return res
+
 
 
 def ft_describe(df_temp):
@@ -128,7 +141,7 @@ def ft_describe(df_temp):
         # Stats
         count_val = ft_count(col_clean)
         # missing_val = ft_count(col) - count_val
-        missing_val = round(1 - count_val / ft_count(col), 3)
+        missing_val = (round(1 - count_val / ft_count(col), 3) * 100)
         mean_val = mean(col_clean)
         std_val = std(col_clean)
         min_val = ft_min(col_clean)

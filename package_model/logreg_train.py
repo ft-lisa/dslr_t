@@ -3,6 +3,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+from pathlib import Path
+
 
 # from package_model.class_MyLogiR_1_vs_Rest import MyLogiR_1_vs_Rest
 try:
@@ -92,26 +95,61 @@ def ft_train(df_train, col_shortl, path_output, path_output_weights):
 
 def main(path_file, path_output, path_output_weights):
 
-    df_train = pd.read_csv(path_file, sep = ',', header=0).drop(columns=['Index'])
-    col_shortl = [col for col in df_train.columns if df_train[col].dtype in ['float64', 'int64']]
+    # Lecture du dataset
+    try:
+        df_train = pd.read_csv(path_file, sep=",", header=0)
+    except FileNotFoundError:
+        print(f"Error: file '{path_file}' not found.")
+        return
+    except Exception as e:
+        print(f"Error: unable to read '{path_file}': {e}")
+        return
 
-    # correl(Defense Against the Dark Arts vs Astronomy) == -1 => on ne garde que astronomy
-    col_shortl = [col for col in col_shortl if col != "Defense Against the Dark Arts"]
+    # Vérification de la colonne cible
+    if "Hogwarts House" not in df_train.columns:
+        print("Error: column 'Hogwarts House' is missing from the dataset.")
+        return
 
-    print(ft_train(df_train, col_shortl, path_output, path_output_weights))
+    if df_train["Hogwarts House"].isna().any():
+        print("Error: column 'Hogwarts House' contains missing values.")
+        return
 
-    return
+
+    # Suppression de l'index
+    if "Index" in df_train.columns:
+        df_train = df_train.drop(columns=["Index"])
+
+    # Sélection des colonnes numériques
+    col_shortl = [
+        col for col in df_train.columns
+        if df_train[col].dtype in ["float64", "int64"]
+    ]
+
+    # Defense Against the Dark Arts est parfaitement corrélée
+    # avec Astronomy, on ne garde donc qu'Astronomy.
+    if "Defense Against the Dark Arts" in col_shortl:
+        col_shortl.remove("Defense Against the Dark Arts")
+
+    print(ft_train(
+        df_train,
+        col_shortl,
+        path_output,
+        path_output_weights
+    ))
 
 
 if __name__ == "__main__":
 
-    # Commande a lancer dans le terminal:
-    # python -m package_model.logreg_train
+    # Usage:
+    # python logreg_train.py dataset_train.csv
 
-    path_train = '../datasets/dataset_train.csv'
-    path_test = '../datasets/dataset_test.csv'
+    if len(sys.argv) != 2:
+        print("Usage: python logreg_train.py dataset_train.csv")
+        sys.exit(1)
 
-    path_output = "../res/model_logreg.pkl"
-    path_output_weights = "../res/logreg_weights.csv"
+    path_train = Path(sys.argv[1])
+
+    path_output = Path("res") / "model_logreg.pkl"
+    path_output_weights = Path("res") / "logreg_weights.csv"
 
     main(path_train, path_output, path_output_weights)
