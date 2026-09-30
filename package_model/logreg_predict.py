@@ -5,6 +5,8 @@ import numpy as np
 import sys
 from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 def ft_pred(df_test, df_weights, path_output):
 
@@ -132,7 +134,10 @@ if __name__ == "__main__":
 
     path_test = Path(sys.argv[1])
 
-    path_weights = Path("res") / "logreg_weights.csv"
-    path_output = Path("res") / "houses.csv"
+    # path_weights = Path("res") / "logreg_weights.csv"
+    # path_output = Path("res") / "houses.csv"
+
+    path_weights = BASE_DIR / "res" / "logreg_weights.csv"
+    path_output = BASE_DIR / "res" / "houses.csv"
 
     main(path_test, path_weights, path_output)

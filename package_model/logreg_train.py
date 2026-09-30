@@ -5,6 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 from pathlib import Path
+import joblib
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # from package_model.class_MyLogiR_1_vs_Rest import MyLogiR_1_vs_Rest
@@ -13,7 +16,7 @@ try:
 except ModuleNotFoundError:
     from class_MyLogiR_1_vs_Rest import MyLogiR_1_vs_Rest
 
-import joblib
+# import joblib
 
 def ft_train(df_train, col_shortl, path_output, path_output_weights):
 
@@ -141,7 +144,7 @@ def main(path_file, path_output, path_output_weights):
 if __name__ == "__main__":
 
     # Usage:
-    # python logreg_train.py dataset_train.csv
+    # python python logreg_train.py ../datasets/dataset_train.csv
 
     if len(sys.argv) != 2:
         print("Usage: python logreg_train.py dataset_train.csv")
@@ -149,7 +152,10 @@ if __name__ == "__main__":
 
     path_train = Path(sys.argv[1])
 
-    path_output = Path("res") / "model_logreg.pkl"
-    path_output_weights = Path("res") / "logreg_weights.csv"
+    # path_output = Path("res") / "model_logreg.pkl"
+    # path_output_weights = Path("res") / "logreg_weights.csv"
+
+    path_output = BASE_DIR / "res" / "model_logreg.pkl"
+    path_output_weights = BASE_DIR / "res" / "logreg_weights.csv"
 
     main(path_train, path_output, path_output_weights)

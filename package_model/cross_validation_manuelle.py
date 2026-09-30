@@ -85,9 +85,18 @@ def ft_cv_manuelle(df_train, col_shortl):
         y_pred_val = model.predict_(X_val)
 
         # Calcul manuel de l'accuracy
-        accuracy = np.mean(
-            y_pred_val == y_val.to_numpy()
-        )
+        #accuracy = np.mean(
+             #y_pred_val == y_val.to_numpy()
+        #)
+
+        #print(f"accuracy1: {accuracy}\n")
+
+        numerateur = sum(1 for y_p, y_t in zip(y_pred_val, list(y_val)) if y_p == y_t)
+        denominateur = len(y_pred_val)
+        accuracy = numerateur / denominateur
+
+        print(f"accuracy: {accuracy}\n")
+
 
         # On garde le resultat du fold
         scores.append(accuracy)
